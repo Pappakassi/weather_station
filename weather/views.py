@@ -55,11 +55,18 @@ def map_view(request):
     """
     Map view showing weather station location
     """
+    station_data = {
+        'lat': 65.6835,  # Akureyri coordinates
+        'lng': -18.1262,  # Akureyri coordinates (negative for West)
+        'name': 'IAKURE31 - Akureyri Veðurstöð'
+    }
+    
     context = {
         'page_title': 'Weather Station Map',
-        'station_lat': 65.6835,  # Akureyri coordinates
-        'station_lng': -18.1262,  # Akureyri coordinates (negative for West)
-        'station_name': 'IAKURE31 - Akureyri Veðurstöð'
+        'station_lat': station_data['lat'],
+        'station_lng': station_data['lng'],
+        'station_name': station_data['name'],
+        'station_data': station_data,  # For JSON script tag
     }
     
     return render(request, 'weather/map.html', context)

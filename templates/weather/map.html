@@ -151,19 +151,34 @@
 <!-- Leaflet JavaScript -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+<!-- Pass Django data safely to JavaScript -->
+{{ station_data|json_script:"station-data" }}
 <script>
-    // Debug what Django is actually rendering
-    console.log('Raw station_lat from template: {{ station_lat }}');
-    console.log('Raw station_lng from template: {{ station_lng }}');
-    console.log('Raw station_name from template: {{ station_name }}');
+    // Get station data from Django template safely
+    const stationDataElement = document.getElementById('station-data');
+    let stationData = {
+        lat: 65.6835,
+        lng: -18.1262,
+        name: 'IAKURE31 - Akureyri Veðurstöð'
+    };
     
-    // Parse coordinates properly with fallbacks
-    const stationLat = {{ station_lat|default:"65.6835" }};
-    const stationLng = {{ station_lng|default:"-18.1262" }};
-    const stationName = "{{ station_name|default:'IAKURE31 - Akureyri Veðurstöð' }}";
-
-    console.log('Parsed coordinates:', stationLat, stationLng);
-    console.log('Station name:', stationName);
+    // Try to parse JSON data if available
+    if (stationDataElement) {
+        try {
+            stationData = JSON.parse(stationDataElement.textContent);
+        } catch (e) {
+            console.warn('Could not parse station data, using defaults');
+        }
+    } else {
+        // Fallback: try to get values directly from template with fallbacks
+        stationData = {
+            lat: {{ station_lat|default:65.6835 }},
+            lng: {{ station_lng|default:-18.1262 }},
+            name: "{{ station_name|default:'IAKURE31 - Akureyri Veðurstöð'|escapejs }}"
+        };
+    }
+    
+    console.log('Station data loaded:', stationData);
 
     let map;
     let stationMarker;
@@ -176,9 +191,9 @@
         console.log('Starting map initialization...');
         
         // Validate coordinates
-        if (isNaN(stationLat) || isNaN(stationLng)) {
-            console.error('Invalid coordinates:', stationLat, stationLng);
-            document.getElementById('weatherMap').innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #ff6b6b; text-align: center;"><div><h4>Map Error</h4><p>Invalid coordinates: ' + stationLat + ', ' + stationLng + '</p></div></div>';
+        if (isNaN(stationData.lat) || isNaN(stationData.lng)) {
+            console.error('Invalid coordinates:', stationData.lat, stationData.lng);
+            document.getElementById('weatherMap').innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #ff6b6b; text-align: center;"><div><h4>Map Error</h4><p>Invalid coordinates: ' + stationData.lat + ', ' + stationData.lng + '</p></div></div>';
             return;
         }
         
@@ -193,8 +208,8 @@
             }
             
             // Create the map
-            map = L.map('weatherMap').setView([stationLat, stationLng], 10);
-            console.log('Map created successfully at coordinates:', stationLat, stationLng);
+            map = L.map('weatherMap').setView([stationData.lat, stationData.lng], 10);
+            console.log('Map created successfully at coordinates:', stationData.lat, stationData.lng);
 
             // Standard tile layer
             standardLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -215,13 +230,13 @@
             });
 
             // Add weather station marker
-            stationMarker = L.marker([stationLat, stationLng], { 
+            stationMarker = L.marker([stationData.lat, stationData.lng], { 
                 icon: stationIcon 
             }).addTo(map);
-            console.log('Marker added at:', stationLat, stationLng);
+            console.log('Marker added at:', stationData.lat, stationData.lng);
 
             // Add popup to marker
-            stationMarker.bindPopup('<div style="color: #333; padding: 12px; min-width: 200px;"><h6 style="margin-bottom: 8px; color: #4c9aff;">📡 ' + stationName + '</h6><p style="margin-bottom: 4px;"><strong>Hnit:</strong> ' + stationLat + '°N, ' + Math.abs(stationLng) + '°W</p><p style="margin-bottom: 4px;"><strong>Tegund:</strong> Sjálfvirk veðurstöð</p><p style="margin-bottom: 4px;"><strong>Staða:</strong> <span style="color: #28a745;">✅ Virk</span></p><p style="margin-bottom: 0;"><strong>Uppfært:</strong> Stöðugt</p></div>');
+            stationMarker.bindPopup('<div style="color: #333; padding: 12px; min-width: 200px;"><h6 style="margin-bottom: 8px; color: #4c9aff;">📡 ' + stationData.name + '</h6><p style="margin-bottom: 4px;"><strong>Hnit:</strong> ' + stationData.lat + '°N, ' + Math.abs(stationData.lng) + '°W</p><p style="margin-bottom: 4px;"><strong>Tegund:</strong> Sjálfvirk veðurstöð</p><p style="margin-bottom: 4px;"><strong>Staða:</strong> <span style="color: #28a745;">✅ Virk</span></p><p style="margin-bottom: 0;"><strong>Uppfært:</strong> Stöðugt</p></div>');
 
             // Open popup after a short delay
             setTimeout(function() {
@@ -242,7 +257,7 @@
     // Zoom to station location
     function zoomToStation() {
         if (map && stationMarker) {
-            map.setView([stationLat, stationLng], 15);
+            map.setView([stationData.lat, stationData.lng], 15);
             stationMarker.openPopup();
         }
     }
