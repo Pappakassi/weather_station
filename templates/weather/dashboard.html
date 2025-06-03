@@ -10,21 +10,12 @@
         </div>
     {% endif %}
 
-    <!-- AI Weather Commentary -->
+    <!-- Weather Commentary -->
     {% if funny_description %}
         <div class="row mb-4">
             <div class="col-12">
                 <div class="weather-card" style="background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%); border: none; color: white;">
-                    <div class="d-flex align-items-center mb-3">
-                        <i class="bi bi-robot" style="font-size: 1.5rem; margin-right: 0.75rem; opacity: 0.9;"></i>
-                        <h5 class="mb-0" style="font-weight: 600;">Greind Veðurskýrsla frá Óla Bj.</h5>
-                        <div class="ms-auto">
-                            <span class="badge" style="background: rgba(255,255,255,0.2); color: white; font-size: 0.7rem; padding: 0.25rem 0.5rem;">
-                                <i class="bi bi-clock me-1"></i>{% now "H:i" %}
-                            </span>
-                        </div>
-                    </div>
-                    <div style="font-size: 1.1rem; line-height: 1.6; font-weight: 400; opacity: 0.95;">
+                    <div style="font-size: 1.1rem; line-height: 1.6; font-weight: 400; opacity: 0.95; text-align: center; font-style: italic;">
                         {{ funny_description }}
                     </div>
                 </div>
@@ -37,16 +28,16 @@
         <div class="col-12">
             <div class="weather-card d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
-                    <i class="bi bi-share" style="font-size: 1.5rem; color: var(--accent-blue); margin-right: 1rem;"></i>
+                    <i class="bi bi-share" style="font-size: 1.2rem; color: var(--accent-blue); margin-right: 0.75rem;"></i>
                     <div>
-                        <h6 class="mb-1" style="color: var(--text-light);">Deila veðrinu þínu</h6>
-                        <small class="text-muted">Sýndu vinum þínum hvað er að gerast í veðrinu!</small>
+                        <h6 class="mb-1" style="color: var(--text-light); font-size: 0.9rem;">Deila veðrinu þínu</h6>
+                        <small class="text-muted" style="font-size: 0.8rem;">Sýndu vinum þínum hvað er að gerast í veðrinu!</small>
                     </div>
                 </div>
-                <button id="shareToFacebook" class="btn" style="background: #1877f2; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease;">
-                    <i class="bi bi-facebook" style="font-size: 1.1rem;"></i>
-                    Deila á Facebook
-                    <div id="shareSpinner" class="spinner-border spinner-border-sm ms-2" style="display: none;" role="status">
+                <button id="shareToFacebook" class="btn" style="background: #1877f2; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 0.25rem; transition: all 0.3s ease; font-size: 0.8rem;">
+                    <i class="bi bi-camera" style="font-size: 0.9rem;"></i>
+                    Deila
+                    <div id="shareSpinner" class="spinner-border spinner-border-sm ms-1" style="display: none; width: 12px; height: 12px;" role="status">
                         <span class="visually-hidden">Hleður...</span>
                     </div>
                 </button>
@@ -270,7 +261,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
-    // Facebook sharing functionality
+    // Screenshot sharing functionality
     function shareToFacebook() {
         const shareBtn = document.getElementById('shareToFacebook');
         const spinner = document.getElementById('shareSpinner');
@@ -294,55 +285,79 @@
         }).then(canvas => {
             // Convert canvas to blob
             canvas.toBlob(function(blob) {
-                // Create a shareable URL for the image
-                const imageUrl = URL.createObjectURL(blob);
-                
                 // Get current weather info for the post text
                 const temperature = '{{ weather.temperature|default:"--" }}';
                 const description = '{{ weather.weather_description|default:"Veður" }}';
                 const funnyDescription = '{{ funny_description|default:"" }}';
                 
                 // Create share text
-                const shareText = `🌤️ Veðrið hjá Óla Bj. núna: ${temperature}°C - ${description}\n\n${funnyDescription}\n\n🔗 Skoðaðu lifandi veðurgögn á:`;
-                const shareUrl = window.location.origin;
+                const shareText = `Veðrið hjá Óla Bj. núna: ${temperature}°C - ${description}\n\n${funnyDescription}`;
                 
-                // Facebook Share Dialog
-                const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
-                
-                // Open Facebook share dialog
-                window.open(facebookShareUrl, 'facebook-share-dialog', 'width=626,height=436');
+                // Check if Web Share API is available and supports files
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'weather.png', { type: 'image/png' })] })) {
+                    // Use Web Share API to share the image
+                    const file = new File([blob], 'vedrid-hja-ola-bj.png', { type: 'image/png' });
+                    
+                    navigator.share({
+                        title: 'Veðrið hjá Óla Bj.',
+                        text: shareText,
+                        files: [file]
+                    }).then(() => {
+                        console.log('Successfully shared screenshot');
+                        showShareSuccess();
+                    }).catch((error) => {
+                        console.error('Error sharing screenshot:', error);
+                        // Fallback to download
+                        downloadScreenshot(blob, shareText);
+                    });
+                } else {
+                    // Fallback: Download the image and show instructions
+                    downloadScreenshot(blob, shareText);
+                }
                 
                 // Reset button state
                 shareBtn.disabled = false;
                 spinner.style.display = 'none';
                 
-                // Show success message
-                showShareSuccess();
-                
-            }, 'image/png', 0.8);
+            }, 'image/png', 0.9);
         }).catch(error => {
             console.error('Error capturing screenshot:', error);
             
-            // Fallback to text-only sharing
-            const shareText = `🌤️ Veðrið hjá Óla Bj. - Lifandi veðurgögn frá persónulegri veðurstöð!`;
-            const shareUrl = window.location.origin;
-            const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
-            
-            window.open(facebookShareUrl, 'facebook-share-dialog', 'width=626,height=436');
-            
-            // Reset button state
+            // Reset button state and show error
             shareBtn.disabled = false;
             spinner.style.display = 'none';
+            
+            // Show error message
+            showErrorMessage('Villa við að taka skjámynd. Reyndu aftur.');
         });
     }
     
+    function downloadScreenshot(blob, shareText) {
+        // Create download link
+        const downloadUrl = URL.createObjectURL(blob);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = downloadUrl;
+        downloadLink.download = 'vedrid-hja-ola-bj.png';
+        
+        // Trigger download
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        
+        // Clean up the URL
+        URL.revokeObjectURL(downloadUrl);
+        
+        // Show instructions for manual sharing
+        showDownloadInstructions(shareText);
+    }
+
     function showShareSuccess() {
         // Create and show temporary success message
         const successDiv = document.createElement('div');
         successDiv.innerHTML = `
             <div class="alert alert-success" style="position: fixed; top: 20px; right: 20px; z-index: 9999; background: var(--success); color: white; border: none; border-radius: 12px; padding: 1rem 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
                 <i class="bi bi-check-circle me-2"></i>
-                Deiling tókst! 🎉
+                Deiling tókst!
             </div>
         `;
         document.body.appendChild(successDiv);
@@ -351,6 +366,72 @@
         setTimeout(() => {
             successDiv.remove();
         }, 3000);
+    }
+
+    function showDownloadInstructions(shareText) {
+        // Create and show download instructions
+        const instructionDiv = document.createElement('div');
+        instructionDiv.innerHTML = `
+            <div class="alert alert-info" style="position: fixed; top: 20px; right: 20px; z-index: 9999; background: var(--accent-blue); color: white; border: none; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.2); max-width: 400px;">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <i class="bi bi-download me-2"></i>
+                        <strong>Skjámynd niðurhal!</strong>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" onclick="this.closest('.alert').parentElement.remove()"></button>
+                </div>
+                <p class="mb-2" style="font-size: 0.9rem;">Skjámyndin var hlaðin niður. Þú getur nú deilt henni á Facebook:</p>
+                <div style="background: rgba(255,255,255,0.1); padding: 0.75rem; border-radius: 8px; font-size: 0.8rem; margin-bottom: 1rem;">
+                    "${shareText}"
+                </div>
+                <button class="btn btn-light btn-sm" onclick="copyToClipboard('${shareText.replace(/'/g, "\\'")}'); this.innerHTML='<i class=\\"bi bi-check\\"></i> Afritað!'">
+                    <i class="bi bi-clipboard me-1"></i>Afrita texta
+                </button>
+            </div>
+        `;
+        document.body.appendChild(instructionDiv);
+        
+        // Remove after 15 seconds
+        setTimeout(() => {
+            if (instructionDiv.parentNode) {
+                instructionDiv.remove();
+            }
+        }, 15000);
+    }
+    
+    function showErrorMessage(message) {
+        // Create and show error message
+        const errorDiv = document.createElement('div');
+        errorDiv.innerHTML = `
+            <div class="alert alert-danger" style="position: fixed; top: 20px; right: 20px; z-index: 9999; background: var(--danger); color: white; border: none; border-radius: 12px; padding: 1rem 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                ${message}
+            </div>
+        `;
+        document.body.appendChild(errorDiv);
+        
+        // Remove after 5 seconds
+        setTimeout(() => {
+            errorDiv.remove();
+        }, 5000);
+    }
+    
+    function copyToClipboard(text) {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(() => {
+                console.log('Text copied to clipboard');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        } else {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+        }
     }
 
     // Auto-refresh functionality
@@ -408,7 +489,7 @@
         console.log('Personal weather station dashboard loaded');
         console.log('Current conditions: Personal Weather Station');
         console.log('3-day forecast: Iceland Meteorological Office');
-        console.log('Facebook sharing enabled 📱');
+        console.log('Facebook sharing enabled');
     });
 </script>
 {% endblock %} 
