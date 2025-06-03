@@ -165,47 +165,64 @@
 
     // Initialize the map
     function initializeMap() {
-        // Create the map
-        map = L.map('weatherMap').setView([stationLat, stationLng], 10);
+        console.log('Initializing map...');
+        console.log('Station coordinates:', stationLat, stationLng);
+        
+        try {
+            // Create the map
+            map = L.map('weatherMap').setView([stationLat, stationLng], 10);
+            console.log('Map created successfully');
 
-        // Standard tile layer
-        standardLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        });
+            // Standard tile layer
+            standardLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            });
 
-        // Satellite layer (using Esri World Imagery)
-        satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-        });
+            // Satellite layer (using Esri World Imagery)
+            satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+                maxZoom: 19
+            });
 
-        // Add standard layer by default
-        standardLayer.addTo(map);
+            // Add standard layer by default
+            standardLayer.addTo(map);
+            console.log('Tile layer added');
 
-        // Custom icon for weather station
-        const stationIcon = L.divIcon({
-            className: 'weather-station-marker',
-            html: '<div style="background: var(--accent-blue); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 2px solid white;"><i class="bi bi-cloud-sun" style="font-size: 16px;"></i></div>',
-            iconSize: [30, 30],
-            iconAnchor: [15, 15]
-        });
+            // Custom icon for weather station - using simple HTML without CSS variables
+            const stationIcon = L.divIcon({
+                className: 'weather-station-marker',
+                html: '<div style="background: #4c9aff; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 2px solid white; font-size: 14px;">📡</div>',
+                iconSize: [30, 30],
+                iconAnchor: [15, 15]
+            });
 
-        // Add weather station marker
-        stationMarker = L.marker([stationLat, stationLng], { 
-            icon: stationIcon 
-        }).addTo(map);
+            // Add weather station marker
+            stationMarker = L.marker([stationLat, stationLng], { 
+                icon: stationIcon 
+            }).addTo(map);
+            console.log('Marker added');
 
-        // Add popup to marker
-        stationMarker.bindPopup(`
-            <div style="color: #333; padding: 8px;">
-                <h6><i class="bi bi-geo-alt-fill me-2"></i>${stationName}</h6>
-                <p class="mb-1"><strong>Coordinates:</strong> ${stationLat}°N, ${stationLng}°W</p>
-                <p class="mb-1"><strong>Type:</strong> Automatic Weather Station</p>
-                <p class="mb-0"><strong>Status:</strong> <span style="color: #28a745;">Active</span></p>
-            </div>
-        `);
+            // Add popup to marker
+            stationMarker.bindPopup(`
+                <div style="color: #333; padding: 12px; min-width: 200px;">
+                    <h6 style="margin-bottom: 8px; color: #4c9aff;">📡 ${stationName}</h6>
+                    <p style="margin-bottom: 4px;"><strong>Hnit:</strong> ${stationLat}°N, ${Math.abs(stationLng)}°W</p>
+                    <p style="margin-bottom: 4px;"><strong>Tegund:</strong> Sjálfvirk veðurstöð</p>
+                    <p style="margin-bottom: 4px;"><strong>Staða:</strong> <span style="color: #28a745;">✅ Virk</span></p>
+                    <p style="margin-bottom: 0;"><strong>Uppfært:</strong> Stöðugt</p>
+                </div>
+            `);
 
-        // Open popup by default
-        stationMarker.openPopup();
+            // Open popup by default
+            setTimeout(function() {
+                stationMarker.openPopup();
+            }, 500);
+            
+            console.log('Map initialization complete');
+        } catch (error) {
+            console.error('Error initializing map:', error);
+        }
     }
 
     // Zoom to station location

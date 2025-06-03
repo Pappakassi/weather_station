@@ -57,9 +57,9 @@ def map_view(request):
     """
     context = {
         'page_title': 'Weather Station Map',
-        'station_lat': 65.6835,  # Personal station coordinates (approximate Iceland location)
-        'station_lng': -18.1262,
-        'station_name': 'Personal Weather Station'
+        'station_lat': 65.6835,  # Akureyri coordinates
+        'station_lng': -18.1262,  # Akureyri coordinates (negative for West)
+        'station_name': 'IAKURE31 - Akureyri Veðurstöð'
     }
     
     return render(request, 'weather/map.html', context)
