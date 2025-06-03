@@ -165,20 +165,21 @@
     // Try to parse JSON data if available
     if (stationDataElement) {
         try {
-            stationData = JSON.parse(stationDataElement.textContent);
+            const parsedData = JSON.parse(stationDataElement.textContent);
+            if (parsedData && parsedData.lat && parsedData.lng) {
+                stationData = parsedData;
+                console.log('Station data loaded from JSON:', stationData);
+            } else {
+                console.warn('Invalid JSON data, using defaults');
+            }
         } catch (e) {
-            console.warn('Could not parse station data, using defaults');
+            console.warn('Could not parse station data, using defaults:', e);
         }
     } else {
-        // Fallback: try to get values directly from template with fallbacks
-        stationData = {
-            lat: {{ station_lat|default:65.6835 }},
-            lng: {{ station_lng|default:-18.1262 }},
-            name: "{{ station_name|default:'IAKURE31 - Akureyri Veðurstöð'|escapejs }}"
-        };
+        console.log('No JSON data element found, using hard-coded defaults');
     }
     
-    console.log('Station data loaded:', stationData);
+    console.log('Final station data:', stationData);
 
     let map;
     let stationMarker;
