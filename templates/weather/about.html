@@ -1,157 +1,157 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Um Óla Bj. - Veðrið hjá Óla Bj.{% endblock %}
+{% block title %}Teymið - Veðrið hjá Óla Bj.{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
-    <!-- Hero Section with Portrait -->
+    <!-- Hero Section -->
     <div class="row mb-5">
         <div class="col-12">
             <div class="weather-card text-center" style="background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%); border: none; color: white; padding: 3rem 2rem;">
-                <div class="row align-items-center">
-                    <div class="col-lg-4 mb-4 mb-lg-0">
-                        <div class="profile-image-container" style="position: relative; display: inline-block;">
-                            <img src="{% static 'images/pabbi.PNG' %}" alt="Óli Bj. - Kvótakóngur og Veðuráhugamaður" 
-                                 style="width: 280px; height: 350px; object-fit: cover; border-radius: 20px; border: 4px solid rgba(255,255,255,0.3); box-shadow: 0 10px 40px rgba(0,0,0,0.3);"
-                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <!-- Fallback if image not found -->
-                            <div style="width: 280px; height: 350px; background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%); border-radius: 20px; border: 4px solid rgba(255,255,255,0.3); box-shadow: 0 10px 40px rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; flex-direction: column; color: white;">
-                                <i class="bi bi-person-circle" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.8;"></i>
-                                <h4>Óli Bj.</h4>
-                                <p style="opacity: 0.8; text-align: center; padding: 0 1rem;">Mynd finnst ekki:<br><code>static/images/pabbi.PNG</code></p>
-                            </div>
-                            <div style="position: absolute; top: -10px; right: -10px; background: #FFD700; color: #1a1a1a; padding: 0.5rem 1rem; border-radius: 20px; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-                                👑 Kvótakóngur
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-8 text-lg-start">
-                        <h1 style="font-size: 3.5rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
-                            Óli Bj. 
-                            <span style="font-size: 1.5rem; opacity: 0.9;">🌤️</span>
-                        </h1>
-                        <h3 style="font-size: 1.5rem; margin-bottom: 2rem; opacity: 0.9; font-weight: 400;">
-                            Kvótakóngur, Flugmaður og Veðuráhugamaður
-                        </h3>
-                        <div style="font-size: 1.2rem; line-height: 1.8; opacity: 0.95;">
-                            <p class="mb-3">
-                                <i class="bi bi-quote" style="font-size: 2rem; opacity: 0.6; margin-right: 0.5rem;"></i>
-                                "Ef þú getur ekki stjórnað veðrinu, vertu að minnsta kosti að fylgjast með því!"
-                            </p>
-                        </div>
-                    </div>
+                <h1 style="font-size: 3.5rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                    Teymið okkar 👥
+                </h1>
+                <h3 style="font-size: 1.5rem; margin-bottom: 2rem; opacity: 0.9; font-weight: 400;">
+                    Sérfræðingar í veðurfræði og tæknimálum
+                </h3>
+                <div style="font-size: 1.2rem; line-height: 1.8; opacity: 0.95;">
+                    <p class="mb-0">
+                        <i class="bi bi-quote" style="font-size: 2rem; opacity: 0.6; margin-right: 0.5rem;"></i>
+                        "Saman getum við allt - jafnvel spáð veðrinu!"
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Biography Section -->
+    <!-- Team Members -->
     <div class="row mb-5">
-        <div class="col-lg-8 mx-auto">
-            <div class="weather-card">
-                <h2 class="gradient-text mb-4">
-                    <i class="bi bi-book me-3"></i>Saga Óla Bj.
-                </h2>
+        <!-- Óli Bj. Profile -->
+        <div class="col-lg-6 mb-4">
+            <div class="weather-card h-100">
+                <div class="text-center mb-4">
+                    <div class="profile-image-container" style="position: relative; display: inline-block; margin-bottom: 1.5rem;">
+                        <img src="{% static 'images/pabbi.PNG' %}" alt="Óli Bj. - Kvótakóngur og Veðuráhugamaður" 
+                             style="width: 250px; height: 300px; object-fit: cover; border-radius: 20px; border: 4px solid var(--accent-blue); box-shadow: 0 10px 40px rgba(0,0,0,0.3);"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <!-- Fallback if image not found -->
+                        <div style="width: 250px; height: 300px; background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%); border-radius: 20px; border: 4px solid var(--accent-blue); box-shadow: 0 10px 40px rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; flex-direction: column; color: white;">
+                            <i class="bi bi-person-circle" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.8;"></i>
+                            <h4>Óli Bj.</h4>
+                        </div>
+                        <div style="position: absolute; top: -10px; right: -10px; background: #FFD700; color: #1a1a1a; padding: 0.5rem 1rem; border-radius: 20px; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                            👑 Kvótakóngur
+                        </div>
+                    </div>
+                    <h3 class="gradient-text mb-2">Óli Bj.</h3>
+                    <p class="text-muted mb-3">Kvótakóngur, Flugmaður og Veðuráhugamaður</p>
+                </div>
                 
-                <div style="font-size: 1.1rem; line-height: 1.8; color: var(--text-light);">
-                    <p class="mb-4">
-                        <strong>Óli Björn</strong> (eða eins og vinir hans kalla hann - "Óli Bj.") er einn merkilegasti persóna 
-                        í íslenskri veðurfræði nútímans. Ferðalag hans frá því að vera <strong>kvótakóngur í sjávarútvegi</strong> 
-                        til að verða <strong>flugmaður og veðuráhugamaður</strong> er eins og saga úr íslenskri kvikmynd! 🎬
+                <div style="font-size: 1rem; line-height: 1.6; color: var(--text-light);">
+                    <p class="mb-3">
+                        <strong>Óli Björn</strong> er einn merkilegasti persóna í íslenskri veðurfræði nútímans. 
+                        Ferðalag hans frá því að vera <strong>kvótakóngur í sjávarútvegi</strong> til að verða 
+                        <strong>flugmaður og veðuráhugamaður</strong> er eins og saga úr íslenskri kvikmynd! 🎬
                     </p>
-
-                    <div class="timeline-section mb-4">
-                        <h4 class="mb-3" style="color: var(--accent-blue);">
-                            <i class="bi bi-ship me-2"></i>Kvótakóngurinn
-                        </h4>
-                        <p>
-                            Á níunda áratugnum var Óli Bj. þekktur um alla Ísland sem <em>"Kvótakóngur Akureyrar"</em>. 
-                            Hann stjórnaði fiskveiðiflota sem var svo stór að jafnvel sjálfur Ægir var orðinn afbrýðisamur! 
-                            🐟👑 En eins og allir góðir kongar, þá vissi Óli Bj. að veðrið væri hans versta óvinur út á hafi. 
-                            Margar nætur eyddi hann í að horfa á veðurkort og grumast yfir stormum sem komu í veg fyrir veiðar.
-                        </p>
-                    </div>
-
-                    <div class="timeline-section mb-4">
-                        <h4 class="mb-3" style="color: var(--accent-purple);">
-                            <i class="bi bi-airplane me-2"></i>Flugdraumurinn
-                        </h4>
-                        <p>
-                            Árið 1995 ákvað Óli Bj. að skipta um starfsvettvang - bókstaflega! Eftir að hafa eytt árum í að 
-                            berjast við öldur úti á Atlantshafi, ákvað hann að takast á við vindinn í loftinu! ✈️ 
-                            Hann varð flugmaður og fann fljótt út að veðrið var enn mikilvægara í loftinu en úti á sjó. 
-                            <em>"Á sjónum geturðu beðið eftir betra veðri, en í loftinu verður þú að vita nákvæmlega hvað er að gerast!"</em>
-                        </p>
-                    </div>
-
-                    <div class="timeline-section mb-4">
-                        <h4 class="mb-3" style="color: var(--accent-blue);">
-                            <i class="bi bi-cloud-sun me-2"></i>Veðuráhuginn
-                        </h4>
-                        <p>
-                            Árið 2010, eftir 15 ára feril sem flugmaður, ákvað Óli Bj. að færa áhuga sinn á veðurfræði 
-                            yfir á næsta stig. Hann setti upp sína eigin veðurstöð (IAKURE31) í garðinum sínum í Akureyri 
-                            og byrjaði að safna gögnum eins og hann ætti von á veðurguði! 📊 Í dag er hann þekktur fyrir 
-                            að hafa nákvæmustu veðurmælingar á Norðurlandi og fyrir að senda vinum sínum veðurspár 
-                            klukkan 6 á hverjum morgni (hvort sem þeir vilja það eða ekki! 😄).
-                        </p>
-                    </div>
-
-                    <div class="fun-facts-section">
-                        <h4 class="mb-3" style="color: var(--accent-purple);">
-                            <i class="bi bi-emoji-laughing me-2"></i>Skemmtilegar staðreyndir um Óla Bj.
-                        </h4>
-                        <ul class="list-unstyled">
-                            <li class="mb-2">
-                                <i class="bi bi-check-circle-fill me-2" style="color: var(--accent-blue);"></i>
-                                Á ennþá sitt fyrsta loftþrýstingsmælitæki frá 1987 og notar það til að "krossa-athuga" nútímatækin
-                            </li>
-                            <li class="mb-2">
-                                <i class="bi bi-check-circle-fill me-2" style="color: var(--accent-blue);"></i>
-                                Getur spáð hvort það rigni innan 2 klukkustunda bara með því að sniffa í loftinu
-                            </li>
-                            <li class="mb-2">
-                                <i class="bi bi-check-circle-fill me-2" style="color: var(--accent-blue);"></i>
-                                Hefur safn af 147 mismunandi hitamæli sem hann "treystir ekki öllum jafn mikið"
-                            </li>
-                            <li class="mb-2">
-                                <i class="bi bi-check-circle-fill me-2" style="color: var(--accent-blue);"></i>
-                                Kallar veðurstöðina sína "Konuna mína" (sem gerir eiginkonuna hans eilítið afbrýðisama 😅)
-                            </li>
-                            <li class="mb-2">
-                                <i class="bi bi-check-circle-fill me-2" style="color: var(--accent-blue);"></i>
-                                Hefur aldrei farið í sumarfrí án þess að athuga veðrið á ferðalandi í 2 vikur fyrirfram
-                            </li>
+                    
+                    <div class="mb-3">
+                        <h5 style="color: var(--accent-blue); margin-bottom: 0.5rem;">
+                            <i class="bi bi-star me-2"></i>Helstu árangur
+                        </h5>
+                        <ul class="list-unstyled" style="font-size: 0.9rem;">
+                            <li class="mb-1"><i class="bi bi-check-circle me-2" style="color: var(--accent-blue);"></i>Kvótakóngur Akureyrar á níunda áratugnum</li>
+                            <li class="mb-1"><i class="bi bi-check-circle me-2" style="color: var(--accent-blue);"></i>15 ára feril sem flugmaður</li>
+                            <li class="mb-1"><i class="bi bi-check-circle me-2" style="color: var(--accent-blue);"></i>Rekur veðurstöð IAKURE31 í Akureyri</li>
+                            <li class="mb-1"><i class="bi bi-check-circle me-2" style="color: var(--accent-blue);"></i>Safn af 147 mismunandi hitamælum</li>
                         </ul>
                     </div>
+                    
+                    <div class="quote-card" style="background: var(--dark-card); padding: 1rem; border-radius: 8px; border-left: 4px solid var(--accent-blue);">
+                        <p style="font-style: italic; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                            "Veðrið er eins og íslensk stjórnmál - óútreiknanlegt og alltaf að kvarta!"
+                        </p>
+                        <small class="text-muted">- Óli Bj., 2019</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Óttar Þór Profile -->
+        <div class="col-lg-6 mb-4">
+            <div class="weather-card h-100">
+                <div class="text-center mb-4">
+                    <div class="profile-image-container" style="position: relative; display: inline-block; margin-bottom: 1.5rem;">
+                        <img src="{% static 'images/ottar.PNG' %}" alt="Óttar Þór Jóhannsson - Yfirmaður tæknimála" 
+                             style="width: 250px; height: 300px; object-fit: cover; border-radius: 20px; border: 4px solid var(--accent-purple); box-shadow: 0 10px 40px rgba(0,0,0,0.3);"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <!-- Fallback if image not found -->
+                        <div style="width: 250px; height: 300px; background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%); border-radius: 20px; border: 4px solid var(--accent-purple); box-shadow: 0 10px 40px rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; flex-direction: column; color: white;">
+                            <i class="bi bi-person-circle" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.8;"></i>
+                            <h4>Óttar Þór</h4>
+                        </div>
+                        <div style="position: absolute; top: -10px; right: -10px; background: #7b68ee; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                            🔧 Tæknimaður
+                        </div>
+                    </div>
+                    <h3 class="gradient-text mb-2">Óttar Þór Jóhannsson</h3>
+                    <p class="text-muted mb-3">Yfirmaður tæknimála, stjórnmálasérfræðingur og prófunaraðili í haffærni bifreiða</p>
+                </div>
+                
+                <div style="font-size: 1rem; line-height: 1.6; color: var(--text-light);">
+                    <p class="mb-3">
+                        <strong>Óttar Þór</strong> er margþætt snillingur sem sameinar tæknilega sérþekkingu við 
+                        djúpan skilning á stjórnmálum og öryggismálum. Hann tryggir að öll tæki og kerfi 
+                        veðurstöðvarinnar standist hæstu gæðakröfur! 🛠️
+                    </p>
+                    
+                    <div class="mb-3">
+                        <h5 style="color: var(--accent-purple); margin-bottom: 0.5rem;">
+                            <i class="bi bi-gear me-2"></i>Sérsvið
+                        </h5>
+                        <ul class="list-unstyled" style="font-size: 0.9rem;">
+                            <li class="mb-1"><i class="bi bi-check-circle me-2" style="color: var(--accent-purple);"></i>Yfirmaður tæknimála og kerfastjórnun</li>
+                            <li class="mb-1"><i class="bi bi-check-circle me-2" style="color: var(--accent-purple);"></i>Stjórnmálasérfræðingur með sérstöðu</li>
+                            <li class="mb-1"><i class="bi bi-check-circle me-2" style="color: var(--accent-purple);"></i>Prófunaraðili í haffærni bifreiða</li>
+                            <li class="mb-1"><i class="bi bi-check-circle me-2" style="color: var(--accent-purple);"></i>Öryggis- og gæðaeftirlit tækja</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="quote-card" style="background: var(--dark-card); padding: 1rem; border-radius: 8px; border-left: 4px solid var(--accent-purple);">
+                        <p style="font-style: italic; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                            "Tæknin má aldrei bila - rétt eins og veðrið, þá verður hún að vera áreiðanleg!"
+                        </p>
+                        <small class="text-muted">- Óttar Þór, 2023</small>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Weather Philosophy Section -->
+    <!-- Team Philosophy Section -->
     <div class="row mb-5">
-        <div class="col-lg-10 mx-auto">
-            <div class="weather-card" style="background: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, rgba(80, 161, 244, 0.1) 100%); border: 1px solid var(--accent-blue);">
+        <div class="col-12">
+            <div class="weather-card" style="background: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, rgba(123, 104, 238, 0.1) 100%); border: 1px solid var(--accent-blue);">
                 <h3 class="text-center mb-4" style="color: var(--accent-blue);">
-                    <i class="bi bi-lightbulb me-2"></i>Veðurspeki Óla Bj.
+                    <i class="bi bi-lightbulb me-2"></i>Hugmyndafræði teymisins
                 </h3>
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <div class="quote-card" style="background: var(--dark-card); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--accent-blue);">
-                            <p style="font-style: italic; margin-bottom: 0.5rem;">
-                                "Veðrið er eins og íslensk stjórnmál - óútreiknanlegt, breytilegt og alltaf að kvarta yfir einhverju!"
+                            <h5 style="color: var(--accent-blue); margin-bottom: 1rem;">🌤️ Veðurfræði</h5>
+                            <p style="margin-bottom: 0.5rem;">
+                                "Nákvæmar veðurmælingar eru undirstaða góðrar spár. Við treystum ekki bara á tölvur - við treystum á reynslu!"
                             </p>
-                            <small class="text-muted">- Óli Bj., 2019</small>
+                            <small class="text-muted">- Teymið</small>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <div class="quote-card" style="background: var(--dark-card); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--accent-purple);">
-                            <p style="font-style: italic; margin-bottom: 0.5rem;">
-                                "Mér finnst fólk sem kvartar yfir veðrinu ekki skilja að án þess værum við bara á stórum steini í geimnum!"
+                            <h5 style="color: var(--accent-purple); margin-bottom: 1rem;">⚙️ Tækni</h5>
+                            <p style="margin-bottom: 0.5rem;">
+                                "Besta tæknin í heimi duger ekki ef hún er ekki rétt uppsett og viðhaldið. Gæði eru allt!"
                             </p>
-                            <small class="text-muted">- Óli Bj., 2021</small>
+                            <small class="text-muted">- Teymið</small>
                         </div>
                     </div>
                 </div>
@@ -161,13 +161,13 @@
 
     <!-- Contact Section -->
     <div class="row">
-        <div class="col-lg-6 mx-auto">
+        <div class="col-lg-8 mx-auto">
             <div class="weather-card text-center">
                 <h3 class="gradient-text mb-3">
-                    <i class="bi bi-envelope me-2"></i>Hafðu samband
+                    <i class="bi bi-envelope me-2"></i>Hafðu samband við teymið
                 </h3>
                 <p class="text-muted mb-4">
-                    Viltu fá persónulega veðurspá eða bara spjalla um vindstyrk og loftþrýsting?
+                    Hvort sem þú vilt fá persónulega veðurspá eða ræða tæknilegar lausnir - við erum hér!
                 </p>
                 <div class="d-flex justify-content-center gap-3 flex-wrap">
                     <span class="badge" style="background: var(--accent-blue); padding: 0.75rem 1.5rem; font-size: 0.9rem;">
@@ -175,6 +175,9 @@
                     </span>
                     <span class="badge" style="background: var(--accent-purple); padding: 0.75rem 1.5rem; font-size: 0.9rem;">
                         <i class="bi bi-broadcast me-2"></i>Stöð: IAKURE31
+                    </span>
+                    <span class="badge" style="background: var(--success); padding: 0.75rem 1.5rem; font-size: 0.9rem;">
+                        <i class="bi bi-people me-2"></i>2 sérfræðingar
                     </span>
                 </div>
             </div>
@@ -186,10 +189,10 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('About Óli Bj. page loaded! 👑🌤️');
+        console.log('Team page loaded! 👥🌤️⚙️');
         
-        // Add some fun animations to the timeline sections
-        const timelineSections = document.querySelectorAll('.timeline-section');
+        // Add some fun animations to the team member cards
+        const teamCards = document.querySelectorAll('.weather-card');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -199,11 +202,24 @@
             });
         }, { threshold: 0.1 });
 
-        timelineSections.forEach(section => {
-            section.style.opacity = '0';
-            section.style.transform = 'translateY(20px)';
-            section.style.transition = 'all 0.6s ease';
-            observer.observe(section);
+        teamCards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+        
+        // Add hover effects to profile images
+        const profileImages = document.querySelectorAll('.profile-image-container img');
+        profileImages.forEach(img => {
+            img.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+                this.style.transition = 'transform 0.3s ease';
+            });
+            
+            img.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
         });
     });
 </script>
