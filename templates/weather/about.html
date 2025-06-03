@@ -1,139 +1,209 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}About - Weather Station{% endblock %}
+{% block title %}Um Óla Bj. - Veðrið hjá Óla Bj.{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="weather-card p-5">
-                <div class="text-center mb-5">
-                    <i class="bi bi-cloud-sun display-1 text-primary mb-3"></i>
-                    <h1 class="display-4 mb-3">Personal Weather Station</h1>
-                    <p class="lead text-muted">Real-time weather monitoring from your home station</p>
-                </div>
-
-                <div class="row g-4 mb-5">
-                    <div class="col-md-6">
-                        <div class="d-flex align-items-start">
-                            <i class="bi bi-geo-alt-fill text-primary me-3 fs-3"></i>
-                            <div>
-                                <h5>Station Information</h5>
-                                <p class="text-muted mb-0">Station ID: <strong>{{ station_id }}</strong></p>
-                                <p class="text-muted">Connected via Weather.com API</p>
+<div class="container-fluid">
+    <!-- Hero Section with Portrait -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="weather-card text-center" style="background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%); border: none; color: white; padding: 3rem 2rem;">
+                <div class="row align-items-center">
+                    <div class="col-lg-4 mb-4 mb-lg-0">
+                        <div class="profile-image-container" style="position: relative; display: inline-block;">
+                            <img src="{% static 'images/oli_bj_portrait.jpg' %}" alt="Óli Bj. - Kvótakóngur og Veðuráhugamaður" 
+                                 style="width: 280px; height: 350px; object-fit: cover; border-radius: 20px; border: 4px solid rgba(255,255,255,0.3); box-shadow: 0 10px 40px rgba(0,0,0,0.3);"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div style="width: 280px; height: 350px; background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%); border-radius: 20px; border: 4px solid rgba(255,255,255,0.3); box-shadow: 0 10px 40px rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; flex-direction: column; color: white;">
+                                <i class="bi bi-person-circle" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.8;"></i>
+                                <h4>Óli Bj.</h4>
+                                <p style="opacity: 0.8; text-align: center; padding: 0 1rem;">Vistaðu myndina í:<br><code>static/images/oli_bj_portrait.jpg</code></p>
+                            </div>
+                            <div style="position: absolute; top: -10px; right: -10px; background: #FFD700; color: #1a1a1a; padding: 0.5rem 1rem; border-radius: 20px; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                                👑 Kvótakóngur
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="col-md-6">
-                        <div class="d-flex align-items-start">
-                            <i class="bi bi-clock text-primary me-3 fs-3"></i>
-                            <div>
-                                <h5>Real-time Updates</h5>
-                                <p class="text-muted mb-0">Data refreshes automatically</p>
-                                <p class="text-muted">Updated every 5 minutes</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row g-4 mb-5">
-                    <div class="col-12">
-                        <h3 class="mb-4">Available Metrics</h3>
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-thermometer-half text-danger me-2"></i>
-                                    <span>Temperature & Feels Like</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-droplet-fill text-info me-2"></i>
-                                    <span>Humidity</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-speedometer2 text-warning me-2"></i>
-                                    <span>Barometric Pressure</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-wind text-success me-2"></i>
-                                    <span>Wind Speed & Direction</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-hurricane text-danger me-2"></i>
-                                    <span>Wind Gusts</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-cloud-rain text-primary me-2"></i>
-                                    <span>Precipitation</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-sun text-warning me-2"></i>
-                                    <span>UV Index</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-brightness-high text-warning me-2"></i>
-                                    <span>Solar Radiation</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-thermometer-half text-secondary me-2"></i>
-                                    <span>Dewpoint</span>
-                                </div>
-                            </div>
+                    <div class="col-lg-8 text-lg-start">
+                        <h1 style="font-size: 3.5rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                            Óli Bj. 
+                            <span style="font-size: 1.5rem; opacity: 0.9;">🌤️</span>
+                        </h1>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 2rem; opacity: 0.9; font-weight: 400;">
+                            Kvótakóngur, Flugmaður og Veðuráhugamaður
+                        </h3>
+                        <div style="font-size: 1.2rem; line-height: 1.8; opacity: 0.95;">
+                            <p class="mb-3">
+                                <i class="bi bi-quote" style="font-size: 2rem; opacity: 0.6; margin-right: 0.5rem;"></i>
+                                "Ef þú getur ekki stjórnað veðrinu, vertu að minnsta kosti að fylgjast með því!"
+                            </p>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <div class="row g-4">
-                    <div class="col-md-6">
-                        <div class="metric-card p-4">
-                            <i class="bi bi-code-slash text-primary mb-3 fs-3"></i>
-                            <h5>API Access</h5>
-                            <p class="text-muted mb-3">Access real-time weather data programmatically</p>
-                            <a href="{% url 'weather:api_current' %}" class="btn btn-outline-primary btn-sm" target="_blank">
-                                <i class="bi bi-box-arrow-up-right me-1"></i>
-                                View JSON API
-                            </a>
+    <!-- Biography Section -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="weather-card">
+                <h2 class="gradient-text mb-4">
+                    <i class="bi bi-book me-3"></i>Saga Óla Bj.
+                </h2>
+                
+                <div style="font-size: 1.1rem; line-height: 1.8; color: var(--text-light);">
+                    <p class="mb-4">
+                        <strong>Óli Björn</strong> (eða eins og vinir hans kalla hann - "Óli Bj.") er einn merkilegasti persóna 
+                        í íslenskri veðurfræði nútímans. Ferðalag hans frá því að vera <strong>kvótakóngur í sjávarútvegi</strong> 
+                        til að verða <strong>flugmaður og veðuráhugamaður</strong> er eins og saga úr íslenskri kvikmynd! 🎬
+                    </p>
+
+                    <div class="timeline-section mb-4">
+                        <h4 class="mb-3" style="color: var(--accent-blue);">
+                            <i class="bi bi-ship me-2"></i>Kvótakóngurinn
+                        </h4>
+                        <p>
+                            Á níunda áratugnum var Óli Bj. þekktur um alla Ísland sem <em>"Kvótakóngur Akureyrar"</em>. 
+                            Hann stjórnaði fiskveiðiflota sem var svo stór að jafnvel sjálfur Ægir var orðinn afbrýðisamur! 
+                            🐟👑 En eins og allir góðir kongar, þá vissi Óli Bj. að veðrið væri hans versta óvinur út á hafi. 
+                            Margar nætur eyddi hann í að horfa á veðurkort og grumast yfir stormum sem komu í veg fyrir veiðar.
+                        </p>
+                    </div>
+
+                    <div class="timeline-section mb-4">
+                        <h4 class="mb-3" style="color: var(--accent-purple);">
+                            <i class="bi bi-airplane me-2"></i>Flugdraumurinn
+                        </h4>
+                        <p>
+                            Árið 1995 ákvað Óli Bj. að skipta um starfsvettvang - bókstaflega! Eftir að hafa eytt árum í að 
+                            berjast við öldur úti á Atlantshafi, ákvað hann að takast á við vindinn í loftinu! ✈️ 
+                            Hann varð flugmaður og fann fljótt út að veðrið var enn mikilvægara í loftinu en úti á sjó. 
+                            <em>"Á sjónum geturðu beðið eftir betra veðri, en í loftinu verður þú að vita nákvæmlega hvað er að gerast!"</em>
+                        </p>
+                    </div>
+
+                    <div class="timeline-section mb-4">
+                        <h4 class="mb-3" style="color: var(--accent-blue);">
+                            <i class="bi bi-cloud-sun me-2"></i>Veðuráhuginn
+                        </h4>
+                        <p>
+                            Árið 2010, eftir 15 ára feril sem flugmaður, ákvað Óli Bj. að færa áhuga sinn á veðurfræði 
+                            yfir á næsta stig. Hann setti upp sína eigin veðurstöð (IAKURE31) í garðinum sínum í Akureyri 
+                            og byrjaði að safna gögnum eins og hann ætti von á veðurguði! 📊 Í dag er hann þekktur fyrir 
+                            að hafa nákvæmustu veðurmælingar á Norðurlandi og fyrir að senda vinum sínum veðurspár 
+                            klukkan 6 á hverjum morgni (hvort sem þeir vilja það eða ekki! 😄).
+                        </p>
+                    </div>
+
+                    <div class="fun-facts-section">
+                        <h4 class="mb-3" style="color: var(--accent-purple);">
+                            <i class="bi bi-emoji-laughing me-2"></i>Skemmtilegar staðreyndir um Óla Bj.
+                        </h4>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color: var(--accent-blue);"></i>
+                                Á ennþá sitt fyrsta loftþrýstingsmælitæki frá 1987 og notar það til að "krossa-athuga" nútímatækin
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color: var(--accent-blue);"></i>
+                                Getur spáð hvort það rigni innan 2 klukkustunda bara með því að sniffa í loftinu
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color: var(--accent-blue);"></i>
+                                Hefur safn af 147 mismunandi hitamæli sem hann "treystir ekki öllum jafn mikið"
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color: var(--accent-blue);"></i>
+                                Kallar veðurstöðina sína "Konuna mína" (sem gerir eiginkonuna hans eilítið afbrýðisama 😅)
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color: var(--accent-blue);"></i>
+                                Hefur aldrei farið í sumarfrí án þess að athuga veðrið á ferðalandi í 2 vikur fyrirfram
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weather Philosophy Section -->
+    <div class="row mb-5">
+        <div class="col-lg-10 mx-auto">
+            <div class="weather-card" style="background: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, rgba(80, 161, 244, 0.1) 100%); border: 1px solid var(--accent-blue);">
+                <h3 class="text-center mb-4" style="color: var(--accent-blue);">
+                    <i class="bi bi-lightbulb me-2"></i>Veðurspeki Óla Bj.
+                </h3>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="quote-card" style="background: var(--dark-card); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--accent-blue);">
+                            <p style="font-style: italic; margin-bottom: 0.5rem;">
+                                "Veðrið er eins og íslensk stjórnmál - óútreiknanlegt, breytilegt og alltaf að kvarta yfir einhverju!"
+                            </p>
+                            <small class="text-muted">- Óli Bj., 2019</small>
                         </div>
                     </div>
-                    
-                    <div class="col-md-6">
-                        <div class="metric-card p-4">
-                            <i class="bi bi-github text-dark mb-3 fs-3"></i>
-                            <h5>Technology Stack</h5>
-                            <p class="text-muted mb-3">Built with Django, Bootstrap 5, and Weather.com API</p>
-                            <div class="d-flex gap-2">
-                                <span class="badge bg-primary">Django</span>
-                                <span class="badge bg-secondary">Bootstrap 5</span>
-                                <span class="badge bg-info">Weather.com API</span>
-                            </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="quote-card" style="background: var(--dark-card); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--accent-purple);">
+                            <p style="font-style: italic; margin-bottom: 0.5rem;">
+                                "Mér finnst fólk sem kvartar yfir veðrinu ekki skilja að án þess værum við bara á stórum steini í geimnum!"
+                            </p>
+                            <small class="text-muted">- Óli Bj., 2021</small>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <div class="text-center mt-5">
-                    <a href="{% url 'weather:dashboard' %}" class="btn btn-primary btn-lg">
-                        <i class="bi bi-arrow-left me-2"></i>
-                        Back to Dashboard
-                    </a>
+    <!-- Contact Section -->
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            <div class="weather-card text-center">
+                <h3 class="gradient-text mb-3">
+                    <i class="bi bi-envelope me-2"></i>Hafðu samband
+                </h3>
+                <p class="text-muted mb-4">
+                    Viltu fá persónulega veðurspá eða bara spjalla um vindstyrk og loftþrýsting?
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <span class="badge" style="background: var(--accent-blue); padding: 0.75rem 1.5rem; font-size: 0.9rem;">
+                        <i class="bi bi-geo-alt me-2"></i>Akureyri, Ísland
+                    </span>
+                    <span class="badge" style="background: var(--accent-purple); padding: 0.75rem 1.5rem; font-size: 0.9rem;">
+                        <i class="bi bi-broadcast me-2"></i>Stöð: IAKURE31
+                    </span>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('About Óli Bj. page loaded! 👑🌤️');
+        
+        // Add some fun animations to the timeline sections
+        const timelineSections = document.querySelectorAll('.timeline-section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        timelineSections.forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'all 0.6s ease';
+            observer.observe(section);
+        });
+    });
+</script>
 {% endblock %} 

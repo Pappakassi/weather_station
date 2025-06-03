@@ -511,6 +511,12 @@
                 </a>
             </div>
             <div class="nav-item">
+                <a href="{% url 'weather:about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">
+                    <i class="bi bi-person-circle"></i>
+                    Um Óla Bj.
+                </a>
+            </div>
+            <div class="nav-item">
                 <a href="#" class="nav-link">
                     <i class="bi bi-calendar3"></i>
                     Dagatal
