@@ -32,6 +32,28 @@
         </div>
     {% endif %}
 
+    <!-- Social Sharing Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="weather-card d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-share" style="font-size: 1.5rem; color: var(--accent-blue); margin-right: 1rem;"></i>
+                    <div>
+                        <h6 class="mb-1" style="color: var(--text-light);">Deila veðrinu þínu</h6>
+                        <small class="text-muted">Sýndu vinum þínum hvað er að gerast í veðrinu!</small>
+                    </div>
+                </div>
+                <button id="shareToFacebook" class="btn" style="background: #1877f2; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease;">
+                    <i class="bi bi-facebook" style="font-size: 1.1rem;"></i>
+                    Deila á Facebook
+                    <div id="shareSpinner" class="spinner-border spinner-border-sm ms-2" style="display: none;" role="status">
+                        <span class="visually-hidden">Hleður...</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Top Row: Current Weather and Metrics -->
     <div class="row mb-4">
         <!-- Current Weather - Left -->
@@ -244,7 +266,93 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- Include html2canvas for screenshot capture -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 <script>
+    // Facebook sharing functionality
+    function shareToFacebook() {
+        const shareBtn = document.getElementById('shareToFacebook');
+        const spinner = document.getElementById('shareSpinner');
+        
+        // Show loading state
+        shareBtn.disabled = true;
+        spinner.style.display = 'inline-block';
+        
+        // Capture screenshot of the dashboard
+        const dashboardElement = document.querySelector('.container-fluid');
+        
+        html2canvas(dashboardElement, {
+            backgroundColor: '#1a1a1a',
+            scale: 0.8,
+            useCORS: true,
+            allowTaint: true,
+            scrollX: 0,
+            scrollY: 0,
+            windowWidth: window.innerWidth,
+            windowHeight: window.innerHeight
+        }).then(canvas => {
+            // Convert canvas to blob
+            canvas.toBlob(function(blob) {
+                // Create a shareable URL for the image
+                const imageUrl = URL.createObjectURL(blob);
+                
+                // Get current weather info for the post text
+                const temperature = '{{ weather.temperature|default:"--" }}';
+                const description = '{{ weather.weather_description|default:"Veður" }}';
+                const funnyDescription = '{{ funny_description|default:"" }}';
+                
+                // Create share text
+                const shareText = `🌤️ Veðrið hjá Óla Bj. núna: ${temperature}°C - ${description}\n\n${funnyDescription}\n\n🔗 Skoðaðu lifandi veðurgögn á:`;
+                const shareUrl = window.location.origin;
+                
+                // Facebook Share Dialog
+                const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
+                
+                // Open Facebook share dialog
+                window.open(facebookShareUrl, 'facebook-share-dialog', 'width=626,height=436');
+                
+                // Reset button state
+                shareBtn.disabled = false;
+                spinner.style.display = 'none';
+                
+                // Show success message
+                showShareSuccess();
+                
+            }, 'image/png', 0.8);
+        }).catch(error => {
+            console.error('Error capturing screenshot:', error);
+            
+            // Fallback to text-only sharing
+            const shareText = `🌤️ Veðrið hjá Óla Bj. - Lifandi veðurgögn frá persónulegri veðurstöð!`;
+            const shareUrl = window.location.origin;
+            const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
+            
+            window.open(facebookShareUrl, 'facebook-share-dialog', 'width=626,height=436');
+            
+            // Reset button state
+            shareBtn.disabled = false;
+            spinner.style.display = 'none';
+        });
+    }
+    
+    function showShareSuccess() {
+        // Create and show temporary success message
+        const successDiv = document.createElement('div');
+        successDiv.innerHTML = `
+            <div class="alert alert-success" style="position: fixed; top: 20px; right: 20px; z-index: 9999; background: var(--success); color: white; border: none; border-radius: 12px; padding: 1rem 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+                <i class="bi bi-check-circle me-2"></i>
+                Deiling tókst! 🎉
+            </div>
+        `;
+        document.body.appendChild(successDiv);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            successDiv.remove();
+        }, 3000);
+    }
+
     // Auto-refresh functionality
     function refreshWeatherData() {
         fetch('{% url "weather:api_current" %}')
@@ -277,9 +385,30 @@
     // Initialize when page loads
     document.addEventListener('DOMContentLoaded', function() {
         updateUVGauge();
+        
+        // Add Facebook share button event listener
+        const shareBtn = document.getElementById('shareToFacebook');
+        if (shareBtn) {
+            shareBtn.addEventListener('click', shareToFacebook);
+            
+            // Add hover effect
+            shareBtn.addEventListener('mouseenter', function() {
+                this.style.background = '#166fe5';
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 4px 20px rgba(24, 119, 242, 0.3)';
+            });
+            
+            shareBtn.addEventListener('mouseleave', function() {
+                this.style.background = '#1877f2';
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+        }
+        
         console.log('Personal weather station dashboard loaded');
         console.log('Current conditions: Personal Weather Station');
         console.log('3-day forecast: Iceland Meteorological Office');
+        console.log('Facebook sharing enabled 📱');
     });
 </script>
 {% endblock %} 
