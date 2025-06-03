@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Veðrið hjá Óla Bj. - Veðurstjórnborð{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom Dark Theme CSS -->
+    <style>
+        :root {
+            --dark-bg: #0a0a0f;
+            --dark-surface: #1a1a24;
+            --dark-card: #2a2a38;
+            --dark-border: #3a3a4a;
+            --accent-blue: #4c9aff;
+            --accent-purple: #7b68ee;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0c3;
+            --text-muted: #6b6b7d;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --sidebar-width: 280px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(180deg, var(--dark-surface) 0%, var(--dark-card) 100%);
+            border-right: 1px solid var(--dark-border);
+            z-index: 1000;
+            padding: 2rem 0;
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar-header {
+            padding: 0 2rem 2rem 2rem;
+            border-bottom: 1px solid var(--dark-border);
+            margin-bottom: 2rem;
+        }
+        
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .sidebar-brand i {
+            font-size: 1.5rem;
+            margin-right: 0.75rem;
+            color: var(--accent-blue);
+        }
+        
+        .sidebar-nav {
+            padding: 0 1rem;
+        }
+        
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+            color: white;
+            transform: translateX(8px);
+        }
+        
+        .nav-link i {
+            font-size: 1.25rem;
+            margin-right: 0.875rem;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .user-profile {
+            position: absolute;
+            bottom: 2rem;
+            left: 1rem;
+            right: 1rem;
+            padding: 1rem;
+            background: var(--dark-card);
+            border-radius: 12px;
+            border: 1px solid var(--dark-border);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+        
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            padding: 2rem;
+            background: var(--dark-bg);
+        }
+        
+        /* Weather Cards */
+        .weather-card {
+            background: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .weather-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .current-temp {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+        
+        .weather-description {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .location-date {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+        
+        .weather-icon {
+            font-size: 3rem;
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+        }
+        
+        /* Metric Cards */
+        .metric-card {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 4px 20px rgba(76, 154, 255, 0.2);
+        }
+        
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .metric-icon {
+            font-size: 1.25rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Gauges */
+        .gauge-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1rem;
+        }
+        
+        .gauge-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, var(--dark-border) 0%, var(--dark-border) 100%);
+        }
+        
+        .gauge-fill {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, var(--accent-blue) 0%, var(--accent-purple) 66%, var(--dark-border) 66%);
+        }
+        
+        .gauge-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: var(--dark-card);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .gauge-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .gauge-max {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        /* Forecast List */
+        .forecast-item {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+        
+        .forecast-item:hover {
+            border-color: var(--accent-blue);
+            transform: translateX(8px);
+        }
+        
+        .forecast-day {
+            font-weight: 600;
+            color: var(--text-primary);
+            min-width: 80px;
+        }
+        
+        .forecast-icon {
+            font-size: 1.5rem;
+            color: var(--accent-blue);
+            margin: 0 1rem;
+        }
+        
+        .forecast-temp {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        /* Map Container */
+        .map-container {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 16px;
+            height: 300px;
+            overflow: hidden;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            
+            .current-temp {
+                font-size: 3rem;
+            }
+        }
+        
+        /* Utility Classes */
+        .gradient-text {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{% url 'weather:dashboard' %}" class="sidebar-brand">
+                <i class="bi bi-cloud-sun"></i>
+                Veðrið hjá Óla Bj.
+            </a>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-item">
+                <a href="{% url 'weather:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <i class="bi bi-house-door"></i>
+                    Veðurstjórnborð
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="{% url 'weather:forecast' %}" class="nav-link {% if request.resolver_match.url_name == 'forecast' %}active{% endif %}">
+                    <i class="bi bi-graph-up"></i>
+                    Veðurspá
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="{% url 'weather:map' %}" class="nav-link {% if request.resolver_match.url_name == 'map' %}active{% endif %}">
+                    <i class="bi bi-geo-alt"></i>
+                    Kortayfirlit
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-calendar3"></i>
+                    Dagatal
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-bell"></i>
+                    Tilkynningar
+                </a>
+            </div>
+        </nav>
+        
+        <div class="user-profile">
+            <div class="d-flex align-items-center">
+                <div class="user-avatar">
+                    ÓB
+                </div>
+                <div class="user-info">
+                    <div class="user-name">Óli Bj.</div>
+                    <div class="user-role">Veðuráhugamaður</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4" role="alert" style="background: var(--dark-card); border: 1px solid var(--accent-blue); color: var(--text-primary);">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" style="filter: invert(1);"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Mobile Sidebar Toggle -->
+    <script>
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('show');
+        }
+        
+        // Auto-update weather data every 5 minutes
+        function updateWeatherData() {
+            // This will be implemented to update data without full page reload
+            console.log('Updating weather data...');
+        }
+        
+        // Set interval for auto-update
+        setInterval(updateWeatherData, 300000); // 5 minutes
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

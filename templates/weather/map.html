@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+
+{% block title %}Veðurstöðvarkort - Veðrið hjá Óla Bj.{% endblock %}
+
+{% block extra_css %}
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    .map-controls {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .control-button {
+        background: var(--dark-surface);
+        border: 1px solid var(--dark-border);
+        color: var(--text-primary);
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        margin-right: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .control-button:hover {
+        background: var(--accent-blue);
+        border-color: var(--accent-blue);
+        color: white;
+    }
+    
+    .map-info {
+        background: var(--dark-surface);
+        border: 1px solid var(--dark-border);
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+    
+    #weatherMap {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--dark-border);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="weather-card">
+                <h1 class="gradient-text mb-3">
+                    <i class="bi bi-geo-alt me-2"></i>
+                    Staðsetning Veðurstöðvar
+                </h1>
+                <p class="text-muted">Gagnvirkt kort sem sýnir staðsetningu Akureyrar veðurstöðvar</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Map Controls -->
+        <div class="col-lg-3 mb-4">
+            <div class="map-controls">
+                <h5 class="text-primary mb-3">Kortstýring</h5>
+                <button class="control-button" onclick="zoomToStation()">
+                    <i class="bi bi-zoom-in me-2"></i>Stækka að stöð
+                </button>
+                <button class="control-button" onclick="toggleSatellite()">
+                    <i class="bi bi-globe me-2"></i>Gervihnattayfirlit
+                </button>
+                <button class="control-button" onclick="showWeatherLayer()">
+                    <i class="bi bi-cloud me-2"></i>Veðurlag
+                </button>
+            </div>
+
+            <div class="map-info">
+                <h6 class="text-primary mb-3">Upplýsingar um stöð</h6>
+                <div class="mb-2">
+                    <strong>Nafn:</strong> {{ station_name }}
+                </div>
+                <div class="mb-2">
+                    <strong>Breidd:</strong> {{ station_lat }}°N
+                </div>
+                <div class="mb-2">
+                    <strong>Lengd:</strong> {{ station_lng }}°W
+                </div>
+                <div class="mb-2">
+                    <strong>Hæð:</strong> ~30m yfir sjávarmáli
+                </div>
+                <div class="mb-2">
+                    <strong>Tegund stöðvar:</strong> Sjálfvirk veðurstöð
+                </div>
+                <div class="mb-3">
+                    <strong>Gagnagjafi:</strong> Veðurstofa Íslands
+                </div>
+                
+                <div class="mt-3">
+                    <a href="{% url 'weather:dashboard' %}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-arrow-left me-2"></i>Til baka á stjórnborð
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Map -->
+        <div class="col-lg-9 mb-4">
+            <div class="weather-card">
+                <div id="weatherMap" style="height: 600px; width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Information -->
+    <div class="row">
+        <div class="col-12">
+            <div class="weather-card">
+                <h5 class="gradient-text mb-3">Um Akureyrar veðurstöð</h5>
+                <div class="row">
+                    <div class="col-md-8">
+                        <p class="text-muted mb-3">
+                            Akureyrar veðurstöð er staðsett á Norður-Íslandi og veitir rauntíma veðurgögn
+                            þar með talið hitastig, raka, vindhraða og stefnu, úrkomu og loftþrýsting.
+                        </p>
+                        <p class="text-muted mb-3">
+                            Akureyri er næststærsta þéttbýli Íslands og stærsti bærinn á norðursvæðinu. 
+                            Veðurstöðin þjónar sem mikilvægur mælingarpunktur fyrir arkurskipulag
+                            sem einkennir þetta svæði.
+                        </p>
+                        <p class="text-muted">
+                            Gögn eru safnað stöðugt og uppfærð reglulega í gegnum net Veðurstofu Íslands
+                            af sjálfvirkum veðurstöðvum um allt land.
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="metric-card text-center">
+                            <i class="bi bi-thermometer-half metric-icon"></i>
+                            <div class="metric-value">24/7</div>
+                            <div class="metric-label">Gagnasöfnun</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Leaflet JavaScript -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // Django template variables passed to JavaScript
+    const stationLat = {{ station_lat }};
+    const stationLng = {{ station_lng }};
+    const stationName = "{{ station_name }}";
+
+    let map;
+    let stationMarker;
+    let satelliteLayer;
+    let standardLayer;
+    let currentLayer = 'standard';
+
+    // Initialize the map
+    function initializeMap() {
+        // Create the map
+        map = L.map('weatherMap').setView([stationLat, stationLng], 10);
+
+        // Standard tile layer
+        standardLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+
+        // Satellite layer (using Esri World Imagery)
+        satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        });
+
+        // Add standard layer by default
+        standardLayer.addTo(map);
+
+        // Custom icon for weather station
+        const stationIcon = L.divIcon({
+            className: 'weather-station-marker',
+            html: '<div style="background: var(--accent-blue); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 2px solid white;"><i class="bi bi-cloud-sun" style="font-size: 16px;"></i></div>',
+            iconSize: [30, 30],
+            iconAnchor: [15, 15]
+        });
+
+        // Add weather station marker
+        stationMarker = L.marker([stationLat, stationLng], { 
+            icon: stationIcon 
+        }).addTo(map);
+
+        // Add popup to marker
+        stationMarker.bindPopup(`
+            <div style="color: #333; padding: 8px;">
+                <h6><i class="bi bi-geo-alt-fill me-2"></i>${stationName}</h6>
+                <p class="mb-1"><strong>Coordinates:</strong> ${stationLat}°N, ${stationLng}°W</p>
+                <p class="mb-1"><strong>Type:</strong> Automatic Weather Station</p>
+                <p class="mb-0"><strong>Status:</strong> <span style="color: #28a745;">Active</span></p>
+            </div>
+        `);
+
+        // Open popup by default
+        stationMarker.openPopup();
+    }
+
+    // Zoom to station location
+    function zoomToStation() {
+        map.setView([stationLat, stationLng], 15);
+        stationMarker.openPopup();
+    }
+
+    // Toggle between standard and satellite view
+    function toggleSatellite() {
+        if (currentLayer === 'standard') {
+            map.removeLayer(standardLayer);
+            map.addLayer(satelliteLayer);
+            currentLayer = 'satellite';
+        } else {
+            map.removeLayer(satelliteLayer);
+            map.addLayer(standardLayer);
+            currentLayer = 'standard';
+        }
+    }
+
+    // Show weather layer (placeholder for future weather overlay)
+    function showWeatherLayer() {
+        // This would integrate with weather radar or other meteorological overlays
+        alert('Weather layer functionality would be implemented here with radar data overlay.');
+    }
+
+    // Initialize map when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeMap();
+    });
+</script>
+{% endblock %} 

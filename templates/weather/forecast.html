@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Veðurspá - Veðrið hjá Óla Bj.{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="weather-card">
+                <h1 class="gradient-text mb-3">
+                    <i class="bi bi-graph-up me-2"></i>
+                    3 Daga Veðurspá
+                </h1>
+                <p class="text-muted">3 daga staðbundin veðurspá fyrir þitt svæði</p>
+            </div>
+        </div>
+    </div>
+
+    {% if error_message %}
+        <div class="alert alert-danger mb-4" style="background: var(--dark-card); border: 1px solid var(--danger); color: var(--danger);">
+            <i class="bi bi-exclamation-triangle me-2"></i>{{ error_message }}
+        </div>
+    {% endif %}
+
+    <div class="row">
+        {% if forecast %}
+            {% for day in forecast %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="weather-card text-center h-100">
+                        <h6 class="text-primary mb-3">{{ day.day_name }}</h6>
+                        <div class="mb-3">{{ day.date }}</div>
+                        <i class="bi {{ day.icon_class }}" style="font-size: 3rem; color: var(--accent-blue); margin-bottom: 1rem;"></i>
+                        <div class="h4 gradient-text mb-2">{{ day.temperature|floatformat:1 }}°C</div>
+                        <div class="text-muted mb-3">{{ day.weather_description }}</div>
+                        
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="metric-card">
+                                    <i class="bi bi-wind metric-icon"></i>
+                                    <div class="metric-value" style="font-size: 1.25rem;">{{ day.wind_speed|floatformat:1 }}</div>
+                                    <div class="metric-label">Vindur (m/s)</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="metric-card">
+                                    <i class="bi bi-cloud-rain metric-icon"></i>
+                                    <div class="metric-value" style="font-size: 1.25rem;">{{ day.precipitation|floatformat:1 }}</div>
+                                    <div class="metric-label">Rigning (mm)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="weather-card text-center">
+                    <i class="bi bi-cloud-slash" style="font-size: 4rem; color: var(--text-muted); margin-bottom: 2rem;"></i>
+                    <h3 class="text-muted">Engar spárgögn í boði</h3>
+                    <p class="text-muted">Ekki tókst að sækja veðurspá á þessum tíma.</p>
+                    <a href="{% url 'weather:dashboard' %}" class="btn btn-primary">
+                        <i class="bi bi-arrow-left me-2"></i>Til baka á stjórnborð
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 
