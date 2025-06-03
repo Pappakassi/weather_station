@@ -329,10 +329,98 @@
             overflow: hidden;
         }
         
+        /* Mobile Navigation Header */
+        .mobile-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--dark-surface);
+            border-bottom: 1px solid var(--dark-border);
+            display: flex;
+            align-items: center;
+            padding: 0 1rem;
+            z-index: 1001;
+        }
+        
+        .mobile-menu-btn {
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .mobile-menu-btn:hover {
+            background: var(--dark-card);
+        }
+        
+        .mobile-menu-btn span {
+            display: block;
+            width: 24px;
+            height: 3px;
+            background: var(--text-primary);
+            margin: 2px 0;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+        
+        .mobile-menu-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .mobile-menu-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+        
+        .mobile-title {
+            flex: 1;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.125rem;
+        }
+        
+        .mobile-title i {
+            color: var(--accent-blue);
+        }
+        
+        /* Mobile Overlay */
+        .mobile-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
         /* Responsive Design */
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
+                z-index: 1000;
             }
             
             .sidebar.show {
@@ -342,10 +430,21 @@
             .main-content {
                 margin-left: 0;
                 padding: 1rem;
+                padding-top: 80px; /* Account for mobile header */
             }
             
             .current-temp {
                 font-size: 3rem;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-header {
+                display: none !important;
+            }
+            
+            .mobile-overlay {
+                display: none !important;
             }
         }
         
@@ -367,12 +466,28 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <!-- Mobile Navigation Header -->
+    <div class="mobile-header d-md-none">
+        <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleSidebar()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="mobile-title">
+            <i class="bi bi-cloud-sun me-2"></i>
+            Veðrið hjá Óla Bj.
+        </div>
+    </div>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
+
     <!-- Sidebar Navigation -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <a href="{% url 'weather:dashboard' %}" class="sidebar-brand">
                 <i class="bi bi-cloud-sun"></i>
-                Veðrið hjá Óla Bj.
+                Veðrið hjá Óla Bj. (v2.0)
             </a>
         </div>
         
@@ -444,8 +559,47 @@
         // Mobile sidebar toggle
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            const menuBtn = document.getElementById('mobileMenuBtn');
+            
+            // Toggle sidebar visibility
             sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
+            menuBtn.classList.toggle('active');
+            
+            // Prevent body scroll when sidebar is open
+            if (sidebar.classList.contains('show')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = 'auto';
+            }
         }
+        
+        // Close sidebar when clicking on nav links (mobile)
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.sidebar .nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        toggleSidebar();
+                    }
+                });
+            });
+            
+            // Close sidebar on window resize if switching to desktop
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    const sidebar = document.getElementById('sidebar');
+                    const overlay = document.getElementById('mobileOverlay');
+                    const menuBtn = document.getElementById('mobileMenuBtn');
+                    
+                    sidebar.classList.remove('show');
+                    overlay.classList.remove('show');
+                    menuBtn.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
         
         // Auto-update weather data every 5 minutes
         function updateWeatherData() {
