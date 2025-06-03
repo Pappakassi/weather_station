@@ -115,8 +115,16 @@ def about(request):
     """
     About page with information about the weather station
     """
-    context = {
-        'station_name': 'Personal Weather Station',
-        'page_title': 'About'
-    }
-    return render(request, 'weather/about.html', context)
+    try:
+        logger.info("About page accessed")
+        context = {
+            'station_name': 'Personal Weather Station',
+            'page_title': 'About'
+        }
+        logger.info("About page context created successfully")
+        return render(request, 'weather/about.html', context)
+    except Exception as e:
+        logger.error(f"Error in about view: {str(e)}")
+        return render(request, 'weather/error.html', {
+            'error_message': f'Error loading team page: {str(e)}'
+        })
