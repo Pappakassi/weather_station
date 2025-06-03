@@ -152,10 +152,18 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-    // Django template variables passed to JavaScript
-    const stationLat = {{ station_lat }};
-    const stationLng = {{ station_lng }};
-    const stationName = "{{ station_name }}";
+    // Debug what Django is actually rendering
+    console.log('Raw station_lat from template: {{ station_lat }}');
+    console.log('Raw station_lng from template: {{ station_lng }}');
+    console.log('Raw station_name from template: {{ station_name }}');
+    
+    // Parse coordinates properly with fallbacks
+    const stationLat = {{ station_lat|default:"65.6835" }};
+    const stationLng = {{ station_lng|default:"-18.1262" }};
+    const stationName = "{{ station_name|default:'IAKURE31 - Akureyri Veðurstöð' }}";
+
+    console.log('Parsed coordinates:', stationLat, stationLng);
+    console.log('Station name:', stationName);
 
     let map;
     let stationMarker;
@@ -165,13 +173,28 @@
 
     // Initialize the map
     function initializeMap() {
-        console.log('Initializing map...');
-        console.log('Station coordinates:', stationLat, stationLng);
+        console.log('Starting map initialization...');
+        
+        // Validate coordinates
+        if (isNaN(stationLat) || isNaN(stationLng)) {
+            console.error('Invalid coordinates:', stationLat, stationLng);
+            document.getElementById('weatherMap').innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #ff6b6b; text-align: center;"><div><h4>Map Error</h4><p>Invalid coordinates: ' + stationLat + ', ' + stationLng + '</p></div></div>';
+            return;
+        }
         
         try {
+            console.log('Creating Leaflet map...');
+            
+            // Create the map container
+            const mapContainer = document.getElementById('weatherMap');
+            if (!mapContainer) {
+                console.error('Map container not found');
+                return;
+            }
+            
             // Create the map
             map = L.map('weatherMap').setView([stationLat, stationLng], 10);
-            console.log('Map created successfully');
+            console.log('Map created successfully at coordinates:', stationLat, stationLng);
 
             // Standard tile layer
             standardLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -179,17 +202,11 @@
                 maxZoom: 19
             });
 
-            // Satellite layer (using Esri World Imagery)
-            satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-                maxZoom: 19
-            });
-
-            // Add standard layer by default
+            // Add standard layer
             standardLayer.addTo(map);
             console.log('Tile layer added');
 
-            // Custom icon for weather station - using simple HTML without CSS variables
+            // Simple marker icon
             const stationIcon = L.divIcon({
                 className: 'weather-station-marker',
                 html: '<div style="background: #4c9aff; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 2px solid white; font-size: 14px;">📡</div>',
@@ -201,58 +218,82 @@
             stationMarker = L.marker([stationLat, stationLng], { 
                 icon: stationIcon 
             }).addTo(map);
-            console.log('Marker added');
+            console.log('Marker added at:', stationLat, stationLng);
 
             // Add popup to marker
-            stationMarker.bindPopup(`
-                <div style="color: #333; padding: 12px; min-width: 200px;">
-                    <h6 style="margin-bottom: 8px; color: #4c9aff;">📡 ${stationName}</h6>
-                    <p style="margin-bottom: 4px;"><strong>Hnit:</strong> ${stationLat}°N, ${Math.abs(stationLng)}°W</p>
-                    <p style="margin-bottom: 4px;"><strong>Tegund:</strong> Sjálfvirk veðurstöð</p>
-                    <p style="margin-bottom: 4px;"><strong>Staða:</strong> <span style="color: #28a745;">✅ Virk</span></p>
-                    <p style="margin-bottom: 0;"><strong>Uppfært:</strong> Stöðugt</p>
-                </div>
-            `);
+            stationMarker.bindPopup('<div style="color: #333; padding: 12px; min-width: 200px;"><h6 style="margin-bottom: 8px; color: #4c9aff;">📡 ' + stationName + '</h6><p style="margin-bottom: 4px;"><strong>Hnit:</strong> ' + stationLat + '°N, ' + Math.abs(stationLng) + '°W</p><p style="margin-bottom: 4px;"><strong>Tegund:</strong> Sjálfvirk veðurstöð</p><p style="margin-bottom: 4px;"><strong>Staða:</strong> <span style="color: #28a745;">✅ Virk</span></p><p style="margin-bottom: 0;"><strong>Uppfært:</strong> Stöðugt</p></div>');
 
-            // Open popup by default
+            // Open popup after a short delay
             setTimeout(function() {
-                stationMarker.openPopup();
-            }, 500);
+                if (stationMarker && map) {
+                    stationMarker.openPopup();
+                    console.log('Popup opened');
+                }
+            }, 1000);
             
-            console.log('Map initialization complete');
+            console.log('Map initialization complete!');
+            
         } catch (error) {
             console.error('Error initializing map:', error);
+            document.getElementById('weatherMap').innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #ff6b6b; text-align: center;"><div><h4>Map Loading Error</h4><p>' + error.message + '</p><p>Check browser console for details.</p></div></div>';
         }
     }
 
     // Zoom to station location
     function zoomToStation() {
-        map.setView([stationLat, stationLng], 15);
-        stationMarker.openPopup();
+        if (map && stationMarker) {
+            map.setView([stationLat, stationLng], 15);
+            stationMarker.openPopup();
+        }
     }
 
     // Toggle between standard and satellite view
     function toggleSatellite() {
+        if (!map) return;
+        
         if (currentLayer === 'standard') {
             map.removeLayer(standardLayer);
+            
+            // Create satellite layer if it doesn't exist
+            if (!satelliteLayer) {
+                satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+                    maxZoom: 19
+                });
+            }
+            
             map.addLayer(satelliteLayer);
             currentLayer = 'satellite';
+            console.log('Switched to satellite view');
         } else {
             map.removeLayer(satelliteLayer);
             map.addLayer(standardLayer);
             currentLayer = 'standard';
+            console.log('Switched to standard view');
         }
     }
 
-    // Show weather layer (placeholder for future weather overlay)
+    // Show weather layer (placeholder)
     function showWeatherLayer() {
-        // This would integrate with weather radar or other meteorological overlays
-        alert('Weather layer functionality would be implemented here with radar data overlay.');
+        alert('Veðurlag virkni verður bætt við síðar með veðurmyndum frá Veðurstofu Íslands.');
     }
 
     // Initialize map when page loads
     document.addEventListener('DOMContentLoaded', function() {
-        initializeMap();
+        console.log('DOM loaded, initializing map...');
+        
+        // Add a small delay to ensure everything is ready
+        setTimeout(function() {
+            initializeMap();
+        }, 100);
     });
+
+    // Also try to initialize if the script runs after DOM is already loaded
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        console.log('DOM already loaded, initializing map immediately...');
+        setTimeout(function() {
+            initializeMap();
+        }, 100);
+    }
 </script>
 {% endblock %} 
