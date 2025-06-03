@@ -17,9 +17,15 @@ def dashboard(request):
     weather_data = weather_service.fetch_current_conditions()
     forecast_data = weather_service.fetch_forecast(days=3)  # 3-day forecast
     
+    # Generate funny weather description if we have weather data
+    funny_description = None
+    if weather_data:
+        funny_description = weather_service.generate_funny_weather_description(weather_data)
+    
     context = {
         'weather': weather_data,
         'forecast': forecast_data,
+        'funny_description': funny_description,
         'station_name': weather_data.get('station_name', 'Personal Weather Station') if weather_data else 'Personal Weather Station',
     }
     

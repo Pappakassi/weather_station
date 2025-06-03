@@ -4,6 +4,7 @@ from django.conf import settings
 from datetime import datetime, timezone
 from typing import Optional, Dict, Any, List
 import json
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -238,4 +239,131 @@ class WeatherService:
         
         # Convert to index (0-15)
         index = round(wind_dir / 22.5) % 16
-        return directions[index] 
+        return directions[index]
+    
+    def generate_funny_weather_description(self, weather_data: Dict[str, Any]) -> str:
+        """
+        Generate funny weather description in Icelandic based on current conditions
+        
+        Args:
+            weather_data: Current weather data dictionary
+            
+        Returns:
+            Funny weather description in Icelandic
+        """
+        try:
+            temperature = weather_data.get('temperature', 0)
+            wind_speed = weather_data.get('wind_speed', 0)
+            humidity = weather_data.get('humidity', 50)
+            pressure = weather_data.get('pressure', 1013)
+            
+            descriptions = []
+            
+            # Temperature-based humor
+            if temperature < -5:
+                descriptions.extend([
+                    "Það er svo kalt að jafnvel jökullinn er farinn að klæðast úlpu! 🧊",
+                    "Hitastigið er svo lágt að pingvínar væru að kvarta! 🐧",
+                    "Kaldara en hjarta fyrrverandi! ❄️",
+                    "Svo kalt að maður þarf að blása í hendurnar bara til að hugsa! 🥶"
+                ])
+            elif temperature < 0:
+                descriptions.extend([
+                    "Kalt nægjanlega til að íslenska kaffið frýsi áður en þú færð það drukkið! ☕",
+                    "Veðrið minnir mann á íslenska sumarið... að vetri til! 😄",
+                    "Frost í loftinu og von í hjarta! ⭐"
+                ])
+            elif temperature < 5:
+                descriptions.extend([
+                    "Veðrið er eins og íslensk stjórnmál - frekar kalt og óvissa! 🤷‍♂️",
+                    "Nógu kalt til að geta geymt smjörið úti! 🧈",
+                    "Hitastigið er í að klæðast íslenska sveitarstjórnarfundum! 📊"
+                ])
+            elif temperature < 15:
+                descriptions.extend([
+                    "Þokkalegt veður til að fara í gönguferð eða flýja landið! 🚶‍♂️",
+                    "Hitastigið er eins og íslensk vinalund - hóflegt og áreiðanlegt! 👫",
+                    "Nógu hlýtt til að fara út án þess að líta út eins og michelin-maður! 🚶"
+                ])
+            elif temperature < 25:
+                descriptions.extend([
+                    "Svo hlýtt að maður gæti næstum tekið af sér ullarsokkunum! 🧦",
+                    "Veðrið er eins og íslensk sumarfrí - of stutt en þokkalegt! ☀️",
+                    "Hitastigið er fullkomið fyrir að borða is... eða bara til að vera til! 🍦"
+                ])
+            else:
+                descriptions.extend([
+                    "Svo heitt að jafnvel Esjufjöll eru farin að svitna! 🏔️",
+                    "Hitastigið er hærra en verðbólgan! 📈",
+                    "Veðrið er eins og íslensk sumardag... sem kemur einu sinni á áratug! 🌞"
+                ])
+            
+            # Wind-based humor
+            if wind_speed > 15:
+                descriptions.extend([
+                    f"Vindurinn er svo sterkur ({wind_speed} m/s) að hárin eru orðin náttúruleg afturábak! 💨",
+                    f"Vindstyrktinn ({wind_speed} m/s) er eins og íslensk efnahagsstefna - óreiðukennd og þrautraun! 🌪️",
+                    f"Vindurinn blæs svo fast að maður þarf GPS til að finna hárgreiðsluna sína! 🧭"
+                ])
+            elif wind_speed > 8:
+                descriptions.extend([
+                    f"Góður vindur ({wind_speed} m/s) til að þurrka þvottinn... ef maður hefur kraft til að hanga hann upp! 👕",
+                    f"Vindurinn er eins og íslenskar umræður - stöðugur og stundum of mikill! 💬"
+                ])
+            else:
+                descriptions.extend([
+                    f"Vindstillið ({wind_speed} m/s) - jafnvel flugurnar geta farið í beinan gang! 🪰",
+                    f"Svo lítill vindur að maður heyrir náttúruna anda! 🍃"
+                ])
+            
+            # Humidity-based humor
+            if humidity > 80:
+                descriptions.extend([
+                    f"Rakinn ({humidity}%) er svo mikill að maður þarf ekki að kaupa andlitskrem! 💧",
+                    f"Loftrakinn er eins og íslenskar samræður - þéttur og stundum erfiður! 😅"
+                ])
+            elif humidity < 30:
+                descriptions.extend([
+                    f"Svo þurt í loftinu ({humidity}%) að jafnvel þorskurinn er farinn að þyrsta! 🐟"
+                ])
+            
+            # Pressure-based humor  
+            if pressure > 1020:
+                descriptions.extend([
+                    f"Loftþrýstingurinn ({pressure} hPa) er eins og íslenskar væntingar - hátt sett! 📊"
+                ])
+            elif pressure < 1000:
+                descriptions.extend([
+                    f"Lágþrýstingur ({pressure} hPa) - jafnvel loftið er þunglyndt! 😔"
+                ])
+            
+            # Random time-based additions
+            current_hour = datetime.now().hour
+            if 6 <= current_hour < 12:
+                descriptions.extend([
+                    "Góðan daginn! Veðrið er tilbúið að takast á við daginn - spurning hvort þú sért það líka! ☀️",
+                    "Morgunveðrið er eins og íslenskt morgunmatur - stundum gott, stundum... well, það er það sem það er! 🍞"
+                ])
+            elif 12 <= current_hour < 18:
+                descriptions.extend([
+                    "Hádegisveðrið gefur okkur tækifæri til að hugsa um hvað við ætlum að kvarta yfir í dag! 🤔",
+                    "Veðrið á miðjum degi - fullkominn tími til að einbeita sér að veðrinu! 🌤️"
+                ])
+            elif 18 <= current_hour < 22:
+                descriptions.extend([
+                    "Kvöldveðrið minnir okkur á að dagurinn er að enda... þökk sé fyrir það! 🌅",
+                    "Gott kvöld! Veðrið er eins og íslensk kvöldstund - róleg og stundum dálítið þunglyndt! 🌆"
+                ])
+            else:
+                descriptions.extend([
+                    "Nætursálin! Veðrið er eins og íslenskar nætur - stundum skárt, stundum mysterious! 🌙",
+                    "Nætursveðrið - tíminn þegar við getum látið eins og við höfum stjórn á lífinu! ⭐"
+                ])
+            
+            # Pick random combination of descriptions
+            selected_descriptions = random.sample(descriptions, min(2, len(descriptions)))
+            return " ".join(selected_descriptions)
+            
+        except Exception as e:
+            logger.error(f"Error generating funny weather description: {e}")
+            return "Veðrið er eins og kóðinn minn - stundum virkar, stundum ekki, en það er alltaf eitthvað áhugavert að gerast! 🤖" 
