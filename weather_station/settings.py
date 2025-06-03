@@ -26,7 +26,11 @@ if not SECRET_KEY:
     if os.environ.get('DEBUG', 'False').lower() == 'true':
         SECRET_KEY = 'django-insecure-dev-key-change-in-production'
     else:
-        raise ValueError("SECRET_KEY environment variable must be set in production")
+        # Fallback for production if SECRET_KEY not set - generate a temporary one
+        import hashlib
+        import time
+        SECRET_KEY = hashlib.sha256(f'fallback-{time.time()}'.encode()).hexdigest()
+        print("WARNING: Using generated SECRET_KEY. Set SECRET_KEY environment variable for security!")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
@@ -36,6 +40,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '0.0.0.0',
+    'weather-station-qmqc.onrender.com',  # Render domain
     # Add your production domain here:
     # 'your-domain.com',
     # 'www.your-domain.com',
