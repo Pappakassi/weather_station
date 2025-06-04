@@ -1,3 +1,4 @@
+# Production requirements for Weather Station PWA v2.0
 asgiref==3.8.1
 certifi==2025.4.26
 cffi==1.17.1
@@ -22,3 +23,4 @@ typing_extensions==4.14.0
 urllib3==2.4.0
 wheel==0.45.1
 whitenoise==6.9.0
+# Updated for PWA deployment - 2025-06-04
