@@ -5,6 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Veðrið hjá Óla Bj. - Veðurstjórnborð{% endblock %}</title>
     
+    <!-- PWA Meta Tags -->
+    <meta name="application-name" content="Veðrið Óla Bj.">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Veðrið Óla Bj.">
+    <meta name="description" content="Íslenska veðurstjórnborðið hjá Óla Bj. - Real-time weather data frá IAKURE31 stöðinni">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="msapplication-config" content="/static/browserconfig.xml">
+    <meta name="msapplication-TileColor" content="#0a0a0f">
+    <meta name="theme-color" content="#4c9aff">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{% url 'manifest' %}">
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon-16x16.png">
+    <link rel="mask-icon" href="/static/images/safari-pinned-tab.svg" color="#4c9aff">
+    
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -603,6 +623,22 @@
         
         // Set interval for auto-update
         setInterval(updateWeatherData, 300000); // 5 minutes
+    </script>
+    
+    <!-- PWA Service Worker Registration -->
+    <script>
+        // Register service worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/static/sw.js')
+                    .then(function(registration) {
+                        console.log('Service Worker registered successfully:', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
     </script>
     
     {% block extra_js %}{% endblock %}

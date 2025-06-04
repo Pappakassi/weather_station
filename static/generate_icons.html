@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate PWA Icons</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #0a0a0f; color: white; padding: 20px; }
+        .icon-canvas { border: 1px solid #333; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>PWA Icon Generator for Veðrið Óla Bj.</h1>
+    <p>Right-click each canvas and "Save as" to get your icons:</p>
+    
+    <!-- 192x192 Icon -->
+    <h3>192x192 Icon (Save as: icon-192.png)</h3>
+    <canvas id="icon192" class="icon-canvas" width="192" height="192"></canvas>
+    
+    <!-- 512x512 Icon -->
+    <h3>512x512 Icon (Save as: icon-512.png)</h3>
+    <canvas id="icon512" class="icon-canvas" width="512" height="512"></canvas>
+    
+    <!-- Apple Touch Icon 180x180 -->
+    <h3>Apple Touch Icon (Save as: apple-touch-icon.png)</h3>
+    <canvas id="apple180" class="icon-canvas" width="180" height="180"></canvas>
+    
+    <!-- Favicon 32x32 -->
+    <h3>Favicon 32x32 (Save as: favicon-32x32.png)</h3>
+    <canvas id="favicon32" class="icon-canvas" width="32" height="32"></canvas>
+    
+    <!-- Favicon 16x16 -->
+    <h3>Favicon 16x16 (Save as: favicon-16x16.png)</h3>
+    <canvas id="favicon16" class="icon-canvas" width="16" height="16"></canvas>
+
+    <script>
+        function createIcon(canvasId, size) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#4c9aff');
+            gradient.addColorStop(1, '#7b68ee');
+            
+            // Fill background
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+            
+            // Weather icon (cloud with sun)
+            ctx.fillStyle = 'white';
+            ctx.font = `${size * 0.6}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Weather emoji or symbol
+            if (size >= 32) {
+                ctx.fillText('☀️', size/2, size/2);
+            } else {
+                // For very small sizes, use a simple circle
+                ctx.beginPath();
+                ctx.arc(size/2, size/2, size/4, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+            
+            // Add "ÓB" text for larger icons
+            if (size >= 180) {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                ctx.font = `bold ${size * 0.15}px Inter, Arial`;
+                ctx.fillText('ÓB', size/2, size * 0.8);
+            }
+        }
+        
+        // Generate all icons
+        createIcon('icon192', 192);
+        createIcon('icon512', 512);
+        createIcon('apple180', 180);
+        createIcon('favicon32', 32);
+        createIcon('favicon16', 16);
+    </script>
+</body>
+</html> 

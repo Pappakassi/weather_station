@@ -1,0 +1,47 @@
+{
+    "name": "Veðrið hjá Óla Bj. - Veðurstjórnborð",
+    "short_name": "Veðrið Óla Bj.",
+    "description": "Íslenska veðurstjórnborðið hjá Óla Bj. - Real-time weather data frá IAKURE31 stöðinni",
+    "start_url": "/",
+    "display": "standalone",
+    "theme_color": "#4c9aff",
+    "background_color": "#0a0a0f",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "is",
+    "icons": [
+        {
+            "src": "/static/images/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/static/images/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/static/images/apple-touch-icon.png",
+            "sizes": "180x180",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ],
+    "categories": ["weather", "utilities"],
+    "screenshots": [
+        {
+            "src": "/static/images/screenshot-wide.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide"
+        },
+        {
+            "src": "/static/images/screenshot-narrow.png",
+            "sizes": "720x1280",
+            "type": "image/png",
+            "form_factor": "narrow"
+        }
+    ]
+} 
