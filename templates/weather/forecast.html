@@ -11,7 +11,7 @@
                     <i class="bi bi-graph-up me-2"></i>
                     3 Daga Veðurspá
                 </h1>
-                <p class="text-muted">3 daga staðbundin veðurspá fyrir þitt svæði</p>
+                <p style="color: #b8c5d6;">3 daga staðbundin veðurspá fyrir þitt svæði</p>
             </div>
         </div>
     </div>
@@ -31,7 +31,7 @@
                         <div class="mb-3">{{ day.date }}</div>
                         <i class="bi {{ day.icon_class }}" style="font-size: 3rem; color: var(--accent-blue); margin-bottom: 1rem;"></i>
                         <div class="h4 gradient-text mb-2">{{ day.temperature|floatformat:1 }}°C</div>
-                        <div class="text-muted mb-3">{{ day.weather_description }}</div>
+                        <div style="color: #b8c5d6;" class="mb-3">{{ day.weather_description }}</div>
                         
                         <div class="row text-center">
                             <div class="col-6">
@@ -56,8 +56,8 @@
             <div class="col-12">
                 <div class="weather-card text-center">
                     <i class="bi bi-cloud-slash" style="font-size: 4rem; color: var(--text-muted); margin-bottom: 2rem;"></i>
-                    <h3 class="text-muted">Engar spárgögn í boði</h3>
-                    <p class="text-muted">Ekki tókst að sækja veðurspá á þessum tíma.</p>
+                    <h3 style="color: #b8c5d6;">Engar spárgögn í boði</h3>
+                    <p style="color: #b8c5d6;">Ekki tókst að sækja veðurspá á þessum tíma.</p>
                     <a href="{% url 'weather:dashboard' %}" class="btn btn-primary">
                         <i class="bi bi-arrow-left me-2"></i>Til baka á stjórnborð
                     </a>
