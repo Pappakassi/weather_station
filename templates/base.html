@@ -562,6 +562,40 @@
             {% endfor %}
         {% endif %}
         
+        <!-- PWA Installation Banner for iOS -->
+        <div id="pwa-install-banner" class="alert alert-info" style="
+            position: fixed;
+            top: 80px;
+            left: 10px;
+            right: 10px;
+            z-index: 9999;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            display: none;
+        ">
+            <div style="font-weight: 600; margin-bottom: 0.5rem;">
+                📱 Install Weather App
+            </div>
+            <div style="font-size: 0.875rem; margin-bottom: 0.75rem;">
+                Tap the <strong>"AA"</strong> button in the address bar above, then select <strong>"Add to Home Screen"</strong>
+            </div>
+            <button onclick="hidePWABanner()" style="
+                background: rgba(255,255,255,0.2);
+                border: 1px solid rgba(255,255,255,0.3);
+                color: white;
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                font-size: 0.875rem;
+            ">
+                Got it!
+            </button>
+        </div>
+        
         {% block content %}{% endblock %}
     </div>
 
@@ -639,6 +673,43 @@
                     });
             });
         }
+        
+        // PWA Installation Banner Logic
+        function isIOSSafari() {
+            const ua = navigator.userAgent;
+            const isiOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+            const isSafari = /Safari/.test(ua) && !/Chrome|CriOS|FxiOS/.test(ua);
+            return isiOS && isSafari;
+        }
+        
+        function isStandalone() {
+            return window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+        }
+        
+        function showPWABanner() {
+            if (isIOSSafari() && !isStandalone()) {
+                const banner = document.getElementById('pwa-install-banner');
+                if (banner) {
+                    banner.style.display = 'block';
+                }
+            }
+        }
+        
+        function hidePWABanner() {
+            const banner = document.getElementById('pwa-install-banner');
+            if (banner) {
+                banner.style.display = 'none';
+            }
+            // Remember user dismissed the banner
+            localStorage.setItem('pwa-banner-dismissed', 'true');
+        }
+        
+        // Show banner after 2 seconds if not dismissed before
+        window.addEventListener('load', function() {
+            if (!localStorage.getItem('pwa-banner-dismissed')) {
+                setTimeout(showPWABanner, 2000);
+            }
+        });
     </script>
     
     {% block extra_js %}{% endblock %}
