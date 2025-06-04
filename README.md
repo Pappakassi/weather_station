@@ -41,13 +41,13 @@ A beautiful, modern weather station dashboard built with Django, featuring real-
 ### Development Setup
 
 1. **Clone and setup**
-   ```bash
-   git clone <your-repo-url>
-   cd weather_station_v2
+```bash
+git clone <your-repo-url>
+cd weather_station_v2
    python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
 
 2. **Environment configuration**
    ```bash
@@ -56,10 +56,10 @@ A beautiful, modern weather station dashboard built with Django, featuring real-
    ```
 
 3. **Run development server**
-   ```bash
-   python manage.py migrate
-   python manage.py runserver
-   ```
+```bash
+python manage.py migrate
+python manage.py runserver
+```
 
 4. **Open browser**
    ```

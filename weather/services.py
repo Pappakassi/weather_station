@@ -247,7 +247,7 @@ class WeatherService:
         
         # Convert to index (0-15)
         index = round(wind_dir / 22.5) % 16
-        return directions[index]
+        return directions[index] 
     
     def _correct_icelandic_text(self, text: str) -> str:
         """
