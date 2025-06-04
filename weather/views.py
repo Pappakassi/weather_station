@@ -134,4 +134,4 @@ def about(request):
         logger.error(f"Error in about view: {str(e)}")
         return render(request, 'weather/error.html', {
             'error_message': f'Error loading team page: {str(e)}'
-        })
+        }) 
