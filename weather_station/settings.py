@@ -150,13 +150,9 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Whitenoise configuration for static files compression
-if DEBUG:
-    # Use simple storage in development
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-else:
-    # Use manifest storage in production with max_age settings
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-    WHITENOISE_MAX_AGE = 31536000  # 1 year cache for static files
+# Use simple storage for both dev and production to avoid manifest issues
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+WHITENOISE_MAX_AGE = 31536000  # 1 year cache for static files
 
 # Media files
 MEDIA_URL = '/media/'
